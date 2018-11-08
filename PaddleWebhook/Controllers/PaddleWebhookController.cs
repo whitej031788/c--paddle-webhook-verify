@@ -28,7 +28,7 @@ namespace PaddleWebhook.Controllers
              * https://vendors.paddle.com/webhook-alert-test
              * and making one of your RouteConfig's point to this controller
             */
-            return Json(new { webhook_verified = PaddleWebhookVerify(content));
+            return Json(new { webhook_verified = PaddleWebhookVerify(content) });
         }
         
         private bool PaddleWebhookVerify(PaddleWebhookModel content)
