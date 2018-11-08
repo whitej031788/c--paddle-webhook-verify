@@ -261,4 +261,4 @@ __pycache__/
 *.pyc
 
 #Paddle RSA key
-./PaddleWebhook/pad_pub_key.pem
+PaddleWebhook/pad_pub_key.pem
