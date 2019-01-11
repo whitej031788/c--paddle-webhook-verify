@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using PaddleWebhook.Models;
-using System.Reflection;
-using System.Text;
-using System.IO;
-// Crypto library for RSA key signature verification
+﻿// Crypto library for RSA key signature verification
 // https://www.nuget.org/packages/BouncyCastle
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Security;
+using PaddleWebhook.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Web.Mvc;
 
 namespace PaddleWebhook.Controllers
 {
@@ -23,6 +23,13 @@ namespace PaddleWebhook.Controllers
              * 
              * The PaddleWebhookModel can be seen defined with all potential Paddle
              * properties for any webhook in Models/PaddleWebhook.cs
+             * 
+             * Instead of using the PaddleWebhook Model, you could also simply parse the Request.Form.AllKeys
+             * which will look at the POST body independantly of a defined model. You can then construct 
+             * your dictionary below based on that. We chose to use the model for structure's sake
+             * 
+             * *NOTE* If Paddle adds any properties to their webhooks, they must be added to the Model, otheriwse
+             * verification will break
              * 
              * This can be tested via the Paddle webhook tester at
              * https://vendors.paddle.com/webhook-alert-test
@@ -46,7 +53,7 @@ namespace PaddleWebhook.Controllers
             foreach (PropertyInfo prop in content.GetType().GetProperties())
             {
                 var myVal = content.GetType().GetProperty(prop.Name).GetValue(content);
-                if (myVal != null && (string)myVal != "" && prop.Name != "p_signature")
+                if (myVal != null && prop.Name != "p_signature")
                 {
                     padStuff.Add(prop.Name, myVal);
                 }
@@ -63,8 +70,7 @@ namespace PaddleWebhook.Controllers
             AsymmetricKeyParameter publicKey = (AsymmetricKeyParameter)new PemReader(newStringReader).ReadObject();
             ISigner sig = SignerUtilities.GetSigner("SHA1withRSA");
             sig.Init(false, publicKey);
-
-            byte[] messageBytes = Encoding.ASCII.GetBytes(message);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             sig.BlockUpdate(messageBytes, 0, messageBytes.Length);
             return sig.VerifySignature(signatureBytes);
         }
