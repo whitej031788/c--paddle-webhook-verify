@@ -5,7 +5,7 @@ using System.Web;
 using System.Collections;
 using System.Text;
 
-namespace PaddleWebhook.Models
+namespace PhpSerialize.Model
 {
 
     /// <summary>

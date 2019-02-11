@@ -3,7 +3,7 @@
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Security;
-using PaddleWebhook.Models;
+using PhpSerialize.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +16,7 @@ namespace PaddleWebhook.Controllers
     public class PaddleWebhookController : Controller
     {
         [HttpPost]
-        public JsonResult Index(PaddleWebhookModel content)
+        public JsonResult Index()
         {
             /* The PaddleWebhookVerify function below is the primary helper for the process
              * The 'content' should be the JSON POST object from the Paddle Webhook
@@ -35,14 +35,15 @@ namespace PaddleWebhook.Controllers
              * https://vendors.paddle.com/webhook-alert-test
              * and making one of your RouteConfig's point to this controller
             */
-            return Json(new { webhook_verified = PaddleWebhookVerify(content) });
+            return Json(new { webhook_verified = PaddleWebhookVerify() });
         }
         
-        private bool PaddleWebhookVerify(PaddleWebhookModel content)
+        private bool PaddleWebhookVerify()
         {
+            string[] allMyKeys = Request.Form.AllKeys;
             SortedDictionary<string, dynamic> padStuff = new SortedDictionary<string, dynamic>();
             PhpSerializer serializer = new PhpSerializer();
-            byte[] signature = Convert.FromBase64String(content.p_signature);
+            byte[] signature = Convert.FromBase64String(Request.Form.GetValues("p_signature")[0]);
             // 'pad_pub_key.pem' should be a file containing only your Paddle Public Key
             // from Vendor Settings / Public Key, including the starting and ending lines
             // -----BEGIN PUBLIC KEY-----
@@ -50,12 +51,12 @@ namespace PaddleWebhook.Controllers
             // -----END PUBLIC KEY-----
             string publicKey = System.IO.File.ReadAllText(Server.MapPath("~/pad_pub_key.pem"));
             // Now fill up SortedDictionary with any properties excluding p_signature
-            foreach (PropertyInfo prop in content.GetType().GetProperties())
+            foreach (string key in allMyKeys)
             {
-                var myVal = content.GetType().GetProperty(prop.Name).GetValue(content);
-                if (myVal != null && prop.Name != "p_signature")
+                var myVal = Request.Form.GetValues(key)[0];
+                if (myVal != null && key != "p_signature")
                 {
-                    padStuff.Add(prop.Name, myVal);
+                    padStuff.Add(key, myVal);
                 }
             }
 
