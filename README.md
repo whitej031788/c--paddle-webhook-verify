@@ -6,8 +6,6 @@ This project is a simple example of verifying Paddle webhooks using C# in an ASP
   -- The [Bouncy Castle API](https://www.bouncycastle.org) is a crypto library we use to do RSA signature verification. It can be downloaded via nuget, or directly from their site and added as a reference in your project.
   - **Controllers/PaddleWebhookController.cs**
   -- This is the controller for the route that accepts the Paddle Webhook, and the main verification code is here, namely _PaddleWebhookVerify_ and _VerifySignature_
-  - **Models/PaddleWebhook.cs**
-  -- This is a Model for a Paddle Webhook, containing all possible properties for any Paddle webhook. You can work with the dynamic POST content too if preferred.
   - **Models/PhpSerializer.cs**
   -- A helper class for serializing a data object the way that PHP does, as this is how Paddle signs the data. Should be able to be used 'as is'.
 
