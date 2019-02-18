@@ -8,6 +8,8 @@ This project is a simple example of verifying Paddle webhooks using C# in an ASP
   -- This is the controller for the route that accepts the Paddle Webhook, and the main verification code is here, namely _PaddleWebhookVerify_ and _VerifySignature_
   - **Models/PhpSerializer.cs**
   -- A helper class for serializing a data object the way that PHP does, as this is how Paddle signs the data. Should be able to be used 'as is'.
+  
+# Usage and support
+This code is provided as an example MVC Web API project currently successfully validates a Paddle webhook on .NET Framework V4.6.1. 
 
-# Disclaimer
-This is meant more to be an example, and it not directly supported by the Paddle team. This "empty" MVC Web API project currently successfully validates a Paddle webhook on .NET Framework V4.6.1.
+This code example is not provided by nor supported by Paddle, and Paddle does not provide technical support or maintenance for this code or any derivations of it.
