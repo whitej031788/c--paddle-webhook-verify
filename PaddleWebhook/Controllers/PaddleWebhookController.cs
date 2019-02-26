@@ -43,7 +43,7 @@ namespace PaddleWebhook.Controllers
             string[] allMyKeys = Request.Form.AllKeys;
             SortedDictionary<string, dynamic> padStuff = new SortedDictionary<string, dynamic>();
             PhpSerializer serializer = new PhpSerializer();
-            byte[] signature = Convert.FromBase64String(Request.Form.GetValues("p_signature")[0]);
+            byte[] signature = Convert.FromBase64String(Request.Form.GetValues("p_signature")?[0] ?? "");
             // 'pad_pub_key.pem' should be a file containing only your Paddle Public Key
             // from Vendor Settings / Public Key, including the starting and ending lines
             // -----BEGIN PUBLIC KEY-----
@@ -53,8 +53,8 @@ namespace PaddleWebhook.Controllers
             // Now fill up SortedDictionary with any properties excluding p_signature
             foreach (string key in allMyKeys)
             {
-                var myVal = Request.Form.GetValues(key)[0];
-                if (myVal != null && key != "p_signature")
+                var myVal = Request.Form.GetValues(key)?[0] ?? "";
+                if (key != "p_signature")
                 {
                     padStuff.Add(key, myVal);
                 }
